@@ -151,82 +151,66 @@
     document.getElementById("status").textContent = message;
   }
 
-  async function checkEmployee() {
-    const nik = document.getElementById("nik").value.trim();
-    const btn = document.getElementById("checkBtn");
+ async function checkEmployee() {
+  const nik = document.getElementById("nik").value.trim();
+  const btn = document.getElementById("checkBtn");
 
-    if (!nik) {
-      setStatus("Masukkan NIK terlebih dahulu.");
-      return;
-    }
-
-    if (API_URL.includes("TEMPEL_URL")) {
-      setStatus("URL Apps Script belum dipasang.");
-      return;
-    }
-
-    btn.disabled = true;
-    setStatus("Memeriksa data karyawan...");
-
-    try {
-      const url = API_URL + "?action=getEmployee&nik=" +
-        encodeURIComponent(nik);
-
-      const response = await fetch(url);
-      const result = await response.json();
-      let data = result;
-
-if (typeof data === "string") {
-  data = JSON.parse(data);
-}
-
-if (typeof data.data === "string") {
-  data.data = JSON.parse(data.data);
-}
-
-if (data.data && data.data.success === true) {
-  const employeeData = data.data.data;
-  data.status = data.data.status;
-  data.data = employeeData;
-}
-
-      if (!result.success || !result.data) {
-        employee = null;
-        document.getElementById("employee").classList.add("hidden");
-        setStatus(result.message || "Data karyawan tidak ditemukan.");
-        return;
-      }
-
-      // Endpoint lama mengembalikan data karyawan dalam bentuk JSON string.
-      const data = typeof result.data === "string"
-        ? JSON.parse(result.data)
-        : result.data;
-
-      if (!data.success || !data.data) {
-        employee = null;
-        setStatus(data.message || "Data karyawan tidak ditemukan.");
-        return;
-      }
-
-      employee = data.data;
-
-      document.getElementById("empName").textContent = employee.nama || "";
-      document.getElementById("empDivision").textContent =
-        "Divisi: " + (employee.divisi || "-");
-      document.getElementById("empStatus").textContent =
-        "Status absensi: " + (data.status || "belum diketahui");
-      document.getElementById("employee").classList.remove("hidden");
-
-      setStatus("Data ditemukan. Aktifkan kamera dan ambil GPS.");
-      updateButtons();
-    } catch (error) {
-      setStatus("Gagal menghubungi API: " + error.message +
-        ". Periksa URL dan akses Web App.");
-    } finally {
-      btn.disabled = false;
-    }
+  if (!nik) {
+    setStatus("Masukkan NIK terlebih dahulu.");
+    return;
   }
 
+  if (API_URL.includes("TEMPEL_URL")) {
+    setStatus("URL Apps Script belum dipasang.");
+    return;
+  }
+
+  btn.disabled = true;
+  employee = null;
+  document.getElementById("employee").classList.add("hidden");
+  updateButtons();
+  setStatus("Memeriksa data karyawan...");
+
+  try {
+    const url = API_URL + "?action=getEmployee&nik=" +
+      encodeURIComponent(nik);
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const result = await response.json();
+
+    if (!result.success || !result.data) {
+      setStatus(result.message || "Data karyawan tidak ditemukan.");
+      return;
+    }
+
+    employee = result.data;
+
+    document.getElementById("empName").textContent =
+      employee.nama || "";
+
+    document.getElementById("empDivision").textContent =
+      "Divisi: " + (employee.divisi || "-");
+
+    document.getElementById("empStatus").textContent =
+      "Status absensi: " + (result.status || "-");
+
+    document.getElementById("employee").classList.remove("hidden");
+
+    setStatus("Data karyawan ditemukan!");
+  } catch (error) {
+    setStatus(
+      "Gagal mengakses API: " + error.message
+    );
+  } finally {
+    btn.disabled = false;
+    updateButtons();
+  }
+}
   async function startCamera() {
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
