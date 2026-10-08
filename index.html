@@ -173,7 +173,9 @@
         encodeURIComponent(nik);
 
       const response = await fetch(url);
-      const result = await response.json();let data = result;
+      const result = await response.json();
+      let data = result;
+      alert(JSON.stringify(result));
 
 if (typeof data === "string") {
   data = JSON.parse(data);
