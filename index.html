@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tes Kamera Absensi</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 480px;
+      margin: 30px auto;
+      padding: 16px;
+      text-align: center;
+    }
+    video {
+      width: 100%;
+      background: #222;
+      border-radius: 12px;
+    }
+    button {
+      padding: 12px 20px;
+      margin: 12px 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Tes Kamera Absensi</h2>
+  <video id="cam" autoplay muted playsinline></video>
+  <p id="status">Tekan tombol untuk mulai.</p>
+  <button id="start">Mulai Kamera</button>
+  <button id="stop">Matikan Kamera</button>
+
+  <script>
+    let stream = null;
+
+    document.getElementById('start').onclick = async () => {
+      const status = document.getElementById('status');
+      try {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error('Fitur kamera tidak tersedia.');
+        }
+
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' },
+          audio: false
+        });
+
+        const video = document.getElementById('cam');
+        video.srcObject = stream;
+        await video.play();
+        status.textContent = 'BERHASIL: kamera aktif!';
+      } catch (e) {
+        status.textContent = 'Gagal: ' + e.name + ' — ' + e.message;
+      }
+    };
+
+    document.getElementById('stop').onclick = () => {
+      if (stream) stream.getTracks().forEach(track => track.stop());
+      stream = null;
+      document.getElementById('cam').srcObject = null;
+      document.getElementById('status').textContent = 'Kamera dimatikan.';
+    };
+  </script>
+</body>
+</html>
