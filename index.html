@@ -182,6 +182,7 @@
     }
 
     const result = await response.json();
+    alert(JSON.stringify(result));
 
     if (!result.success || !result.data) {
       setStatus(result.message || "Data karyawan tidak ditemukan.");
