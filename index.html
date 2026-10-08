@@ -6,7 +6,9 @@
   <title>Absensi Karyawan</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       font-family: Arial, sans-serif;
@@ -29,8 +31,14 @@
       margin-bottom: 18px;
     }
 
-    .header h2 { margin: 0 0 8px; }
-    .header p { margin: 0; opacity: .9; }
+    .header h2 {
+      margin: 0 0 8px;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: .9;
+    }
 
     .card {
       background: white;
@@ -40,7 +48,8 @@
       box-shadow: 0 3px 12px #0000000a;
     }
 
-    input, button {
+    input,
+    button {
       width: 100%;
       padding: 13px;
       border-radius: 10px;
@@ -65,9 +74,17 @@
       cursor: not-allowed;
     }
 
-    .secondary { background: #475569; }
-    .success { background: #15803d; }
-    .warning { background: #b45309; }
+    .secondary {
+      background: #475569;
+    }
+
+    .success {
+      background: #15803d;
+    }
+
+    .warning {
+      background: #b45309;
+    }
 
     video {
       width: 100%;
@@ -77,222 +94,840 @@
       transform: scaleX(-1);
     }
 
-    .hidden { display: none; }
+    #selfiePreview {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 12px;
+      display: block;
+    }
 
-    #status, #gpsStatus {
+    canvas {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #status,
+    #gpsStatus,
+    #faceStatus {
       font-size: 14px;
       line-height: 1.5;
       overflow-wrap: anywhere;
     }
 
-    .name { font-size: 20px; font-weight: bold; }
-    .muted { color: #64748b; font-size: 13px; }
+    .name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .muted {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .success-text {
+      color: #15803d;
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
+
 <div class="container">
+
   <div class="header">
     <h2>Absensi Karyawan</h2>
     <p>Silakan lakukan absensi harian.</p>
   </div>
 
+  <!-- IDENTITAS -->
   <div class="card">
     <h3>1. Identitas Karyawan</h3>
+
     <label for="nik">Nomor Induk Karyawan (NIK)</label>
-    <input id="nik" type="text" placeholder="Masukkan NIK">
-    <button id="checkBtn" onclick="checkEmployee()">Cek Karyawan</button>
+
+    <input
+      id="nik"
+      type="text"
+      placeholder="Masukkan NIK"
+      autocomplete="off"
+    >
+
+    <button id="checkBtn" onclick="checkEmployee()">
+      Cek Karyawan
+    </button>
 
     <div id="employee" class="hidden">
       <hr>
+
       <p class="name" id="empName"></p>
+
       <p id="empDivision"></p>
+
       <p class="muted" id="empStatus"></p>
     </div>
   </div>
 
+
+  <!-- SELFIE -->
   <div class="card">
-    <h3>2. Verifikasi Wajah</h3>
-    <video id="cam" autoplay muted playsinline></video>
-    <button id="startBtn" onclick="startCamera()">Aktifkan Kamera</button>
-    <button class="secondary" onclick="stopCamera()">Matikan Kamera</button>
-    <p id="faceStatus">Kamera belum aktif.</p>
+    <h3>2. Ambil Selfie</h3>
+
+    <video
+      id="cam"
+      autoplay
+      muted
+      playsinline
+    ></video>
+
+    <button
+      id="startBtn"
+      onclick="startCamera()"
+    >
+      Aktifkan Kamera
+    </button>
+
+    <button
+      class="success"
+      id="captureBtn"
+      onclick="captureSelfie()"
+      disabled
+    >
+      Ambil Selfie
+    </button>
+
+    <button
+      class="secondary"
+      onclick="stopCamera()"
+    >
+      Matikan Kamera
+    </button>
+
+    <p id="faceStatus">
+      Kamera belum aktif.
+    </p>
+
+    <img
+      id="selfiePreview"
+      class="hidden"
+      alt="Preview selfie"
+    >
+
+    <button
+      id="retakeBtn"
+      class="secondary hidden"
+      onclick="retakeSelfie()"
+    >
+      Ambil Ulang Selfie
+    </button>
+
+    <canvas
+      id="photoCanvas"
+      class="hidden"
+    ></canvas>
+
     <p class="muted">
-      Catatan: kamera aktif saja belum membuktikan kecocokan wajah.
-      Verifikasi wajah otomatis belum diaktifkan pada versi ini.
+      Selfie hanya digunakan sebagai bukti foto absensi.
+      Tidak ada verifikasi atau pengenalan wajah.
     </p>
   </div>
 
+
+  <!-- GPS -->
   <div class="card">
     <h3>3. Lokasi</h3>
-    <button class="secondary" onclick="getGPS()">Ambil Lokasi GPS</button>
-    <p id="gpsStatus">Lokasi belum diambil.</p>
+
+    <button
+      class="secondary"
+      onclick="getGPS()"
+    >
+      Ambil Lokasi GPS
+    </button>
+
+    <p id="gpsStatus">
+      Lokasi belum diambil.
+    </p>
   </div>
 
+
+  <!-- ABSENSI -->
   <div class="card">
     <h3>4. Kirim Absensi</h3>
-    <button class="success" id="inBtn" disabled
-      onclick="submitAttendance('masuk')">Absen Masuk</button>
-    <button class="warning" id="outBtn" disabled
-      onclick="submitAttendance('pulang')">Absen Pulang</button>
-    <p id="status">Masukkan NIK untuk memulai.</p>
+
+    <button
+      class="success"
+      id="inBtn"
+      disabled
+      onclick="submitAttendance('masuk')"
+    >
+      Absen Masuk
+    </button>
+
+    <button
+      class="warning"
+      id="outBtn"
+      disabled
+      onclick="submitAttendance('pulang')"
+    >
+      Absen Pulang
+    </button>
+
+    <p id="status">
+      Masukkan NIK untuk memulai.
+    </p>
   </div>
+
 </div>
 
+
 <script>
-  // GANTI dengan URL deployment Web App Apps Script kamu.
-  const API_URL = "https://script.google.com/macros/s/AKfycbxqbQvtWoEasmnb_yD6TluN2YoRLe_UArsH3gAe5wEQ4JDqaawwJ01kxtYdcikgKx55/exec";
+
+  // =====================================================
+  // URL WEB APP APPS SCRIPT
+  // =====================================================
+
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbxqbQvtWoEasmnb_yD6TluN2YoRLe_UArsH3gAe5wEQ4JDqaawwJ01kxtYdcikgKx55/exec";
+
+
+  // =====================================================
+  // VARIABLE
+  // =====================================================
 
   let employee = null;
+
   let stream = null;
+
   let locationData = null;
+
+  let photoData = null;
+
+
+  // =====================================================
+  // STATUS
+  // =====================================================
 
   function setStatus(message) {
     document.getElementById("status").textContent = message;
   }
 
- async function checkEmployee() {
-  const nik = document.getElementById("nik").value.trim();
-  const btn = document.getElementById("checkBtn");
 
-  if (!nik) {
-    setStatus("Masukkan NIK terlebih dahulu.");
-    return;
-  }
+  // =====================================================
+  // CEK KARYAWAN
+  // =====================================================
 
-  if (API_URL.includes("TEMPEL_URL")) {
-    setStatus("URL Apps Script belum dipasang.");
-    return;
-  }
+  async function checkEmployee() {
 
-  btn.disabled = true;
-  employee = null;
-  document.getElementById("employee").classList.add("hidden");
-  updateButtons();
-  setStatus("Memeriksa data karyawan...");
+    const nik =
+      document.getElementById("nik").value.trim();
 
-  try {
-    const url = API_URL + "?action=getEmployee&nik=" +
-      encodeURIComponent(nik);
+    const btn =
+      document.getElementById("checkBtn");
 
-    const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
+    if (!nik) {
 
-    const result = await response.json();
-    alert(JSON.stringify(result));
+      setStatus(
+        "Masukkan NIK terlebih dahulu."
+      );
 
-    if (!result.success || !result.data) {
-      setStatus(result.message || "Data karyawan tidak ditemukan.");
       return;
     }
 
-    employee = result.data;
 
-    document.getElementById("empName").textContent =
-      employee.nama || "";
+    if (API_URL.includes("TEMPEL_URL")) {
 
-    document.getElementById("empDivision").textContent =
-      "Divisi: " + (employee.divisi || "-");
+      setStatus(
+        "URL Apps Script belum dipasang."
+      );
 
-    document.getElementById("empStatus").textContent =
-      "Status absensi: " + (result.status || "-");
+      return;
+    }
 
-    document.getElementById("employee").classList.remove("hidden");
 
-    setStatus("Data karyawan ditemukan!");
-  } catch (error) {
-    setStatus(
-      "Gagal mengakses API: " + error.message
-    );
-  } finally {
-    btn.disabled = false;
+    btn.disabled = true;
+
+    employee = null;
+
+    photoData = null;
+
+    document
+      .getElementById("employee")
+      .classList.add("hidden");
+
+    document
+      .getElementById("selfiePreview")
+      .classList.add("hidden");
+
+    document
+      .getElementById("retakeBtn")
+      .classList.add("hidden");
+
     updateButtons();
-  }
-}
-  async function startCamera() {
+
+    setStatus(
+      "Memeriksa data karyawan..."
+    );
+
+
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error("Browser tidak mendukung akses kamera.");
+
+      const url =
+        API_URL +
+        "?action=getEmployee&nik=" +
+        encodeURIComponent(nik);
+
+
+      const response =
+        await fetch(url);
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          "HTTP " + response.status
+        );
       }
+
+
+      const result =
+        await response.json();
+
+
+      if (!result.success || !result.data) {
+
+        setStatus(
+          result.message ||
+          "Data karyawan tidak ditemukan."
+        );
+
+        return;
+      }
+
+
+      employee = result.data;
+
+
+      document.getElementById("empName")
+        .textContent =
+        employee.nama || "";
+
+
+      document.getElementById("empDivision")
+        .textContent =
+        "Divisi: " +
+        (employee.divisi || "-");
+
+
+      document.getElementById("empStatus")
+        .textContent =
+        "Status absensi: " +
+        (result.status || "-");
+
+
+      document
+        .getElementById("employee")
+        .classList.remove("hidden");
+
+
+      setStatus(
+        "Data karyawan ditemukan!"
+      );
+
+
+    } catch (error) {
+
+      setStatus(
+        "Gagal mengakses API: " +
+        error.message
+      );
+
+
+    } finally {
+
+      btn.disabled = false;
+
+      updateButtons();
+    }
+  }
+
+
+  // =====================================================
+  // KAMERA
+  // =====================================================
+
+  async function startCamera() {
+
+    try {
+
+      if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+      ) {
+
+        throw new Error(
+          "Browser tidak mendukung akses kamera."
+        );
+      }
+
 
       stopCamera();
 
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
-        audio: false
-      });
 
-      document.getElementById("cam").srcObject = stream;
-      document.getElementById("faceStatus").textContent =
-        "Kamera aktif. Verifikasi wajah otomatis belum tersedia.";
+      stream =
+        await navigator.mediaDevices.getUserMedia({
+
+          video: {
+            facingMode: "user"
+          },
+
+          audio: false
+
+        });
+
+
+      const cam =
+        document.getElementById("cam");
+
+
+      cam.srcObject = stream;
+
+
+      document.getElementById("faceStatus")
+        .textContent =
+        "Kamera aktif. Silakan ambil selfie.";
+
+
+      document.getElementById("captureBtn")
+        .disabled = false;
+
+
       updateButtons();
+
+
     } catch (error) {
-      document.getElementById("faceStatus").textContent =
-        "Kamera gagal: " + error.name + " — " + error.message;
+
+      document.getElementById("faceStatus")
+        .textContent =
+        "Kamera gagal: " +
+        error.name +
+        " — " +
+        error.message;
+
     }
   }
 
+
+  // =====================================================
+  // STOP KAMERA
+  // =====================================================
+
   function stopCamera() {
-    if (stream) stream.getTracks().forEach(track => track.stop());
+
+    if (stream) {
+
+      stream
+        .getTracks()
+        .forEach(track => track.stop());
+    }
+
+
     stream = null;
-    document.getElementById("cam").srcObject = null;
+
+
+    document.getElementById("cam")
+      .srcObject = null;
+
+
+    document.getElementById("captureBtn")
+      .disabled = true;
+
+
     updateButtons();
   }
 
+
+  // =====================================================
+  // AMBIL SELFIE
+  // =====================================================
+
+  function captureSelfie() {
+
+    if (!stream) {
+
+      setStatus(
+        "Aktifkan kamera terlebih dahulu."
+      );
+
+      return;
+    }
+
+
+    const video =
+      document.getElementById("cam");
+
+    const canvas =
+      document.getElementById("photoCanvas");
+
+    const preview =
+      document.getElementById("selfiePreview");
+
+
+    if (
+      video.videoWidth === 0 ||
+      video.videoHeight === 0
+    ) {
+
+      setStatus(
+        "Kamera belum siap. Tunggu sebentar lalu coba lagi."
+      );
+
+      return;
+    }
+
+
+    canvas.width =
+      video.videoWidth;
+
+    canvas.height =
+      video.videoHeight;
+
+
+    const ctx =
+      canvas.getContext("2d");
+
+
+    // Membuat hasil foto sama seperti
+    // tampilan kamera yang di-mirror.
+    ctx.save();
+
+    ctx.translate(
+      canvas.width,
+      0
+    );
+
+    ctx.scale(-1, 1);
+
+
+    ctx.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+
+    ctx.restore();
+
+
+    // Kompres foto menjadi JPEG
+    photoData =
+      canvas.toDataURL(
+        "image/jpeg",
+        0.80
+      );
+
+
+    // Tampilkan preview
+    preview.src =
+      photoData;
+
+    preview.classList.remove(
+      "hidden"
+    );
+
+
+    document.getElementById("retakeBtn")
+      .classList.remove("hidden");
+
+
+    document.getElementById("faceStatus")
+      .textContent =
+      "Selfie berhasil diambil.";
+
+
+    setStatus(
+      "Selfie berhasil. Silakan ambil lokasi GPS."
+    );
+
+
+    updateButtons();
+  }
+
+
+  // =====================================================
+  // AMBIL ULANG SELFIE
+  // =====================================================
+
+  function retakeSelfie() {
+
+    photoData = null;
+
+
+    document.getElementById("selfiePreview")
+      .classList.add("hidden");
+
+
+    document.getElementById("retakeBtn")
+      .classList.add("hidden");
+
+
+    document.getElementById("faceStatus")
+      .textContent =
+      "Silakan ambil selfie lagi.";
+
+
+    updateButtons();
+  }
+
+
+  // =====================================================
+  // GPS
+  // =====================================================
+
   function getGPS() {
-    const label = document.getElementById("gpsStatus");
+
+    const label =
+      document.getElementById("gpsStatus");
+
 
     if (!navigator.geolocation) {
-      label.textContent = "Browser tidak mendukung GPS.";
+
+      label.textContent =
+        "Browser tidak mendukung GPS.";
+
       return;
     }
 
-    label.textContent = "Mengambil lokasi...";
+
+    label.textContent =
+      "Mengambil lokasi...";
+
 
     navigator.geolocation.getCurrentPosition(
+
       position => {
+
         locationData = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
+
+          lat:
+            position.coords.latitude,
+
+          lng:
+            position.coords.longitude
+
         };
 
+
         label.textContent =
-          "GPS berhasil: " + locationData.lat.toFixed(6) + ", " +
+          "GPS berhasil: " +
+          locationData.lat.toFixed(6) +
+          ", " +
           locationData.lng.toFixed(6);
+
 
         updateButtons();
       },
+
+
       error => {
-        label.textContent = "GPS gagal: " + error.message;
+
+        label.textContent =
+          "GPS gagal: " +
+          error.message;
+
+
         locationData = null;
+
+
         updateButtons();
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+
+
+      {
+        enableHighAccuracy: true,
+
+        timeout: 15000,
+
+        maximumAge: 0
+      }
+
     );
   }
 
+
+  // =====================================================
+  // AKTIFKAN / NONAKTIFKAN TOMBOL ABSEN
+  // =====================================================
+
   function updateButtons() {
-    const ready = !!employee && !!stream && !!locationData;
-    document.getElementById("inBtn").disabled = !ready;
-    document.getElementById("outBtn").disabled = !ready;
+
+    const ready =
+      !!employee &&
+      !!stream &&
+      !!photoData &&
+      !!locationData;
+
+
+    document.getElementById("inBtn")
+      .disabled = !ready;
+
+
+    document.getElementById("outBtn")
+      .disabled = !ready;
   }
 
+
+  // =====================================================
+  // KIRIM ABSENSI
+  // =====================================================
+
   async function submitAttendance(type) {
-    if (!employee || !stream || !locationData) {
-      setStatus("Lengkapi data, aktifkan kamera, dan ambil GPS.");
+
+    if (
+      !employee ||
+      !stream ||
+      !photoData ||
+      !locationData
+    ) {
+
+      setStatus(
+        "Lengkapi NIK, kamera, selfie, dan GPS terlebih dahulu."
+      );
+
       return;
     }
 
-    // Belum mengirim absensi: API backend lama menggunakan format
-    // dan aturan keamanan yang perlu disesuaikan terlebih dahulu.
+
+    const inBtn =
+      document.getElementById("inBtn");
+
+    const outBtn =
+      document.getElementById("outBtn");
+
+
+    inBtn.disabled = true;
+    outBtn.disabled = true;
+
+
     setStatus(
-      "Belum dikirim. Backend perlu diperbarui agar jenis masuk/pulang " +
-      "divalidasi dengan aman sebelum data disimpan."
+      "Mengirim absensi..."
     );
+
+
+    // Backend submitAttendance()
+    // menggunakan:
+    // belum_masuk = absen masuk
+    // selain itu = absen pulang
+
+    const backendType =
+      type === "masuk"
+        ? "belum_masuk"
+        : "sudah_masuk";
+
+
+    const data = {
+
+      action: "submit",
+
+      id: employee.id,
+
+      type: backendType,
+
+      foto: photoData,
+
+      lat: locationData.lat,
+
+      lng: locationData.lng
+    };
+
+
+    try {
+
+      const response =
+        await fetch(API_URL, {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify(data)
+        });
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          "HTTP " + response.status
+        );
+      }
+
+
+      const result =
+        await response.json();
+
+
+      if (!result.success) {
+
+        throw new Error(
+          result.message ||
+          "Absensi gagal disimpan."
+        );
+      }
+
+
+      setStatus(
+        type === "masuk"
+          ? "✅ Absen masuk berhasil disimpan!"
+          : "✅ Absen pulang berhasil disimpan!"
+      );
+
+
+      document.getElementById("empStatus")
+        .textContent =
+        type === "masuk"
+          ? "Status absensi: Sudah Masuk"
+          : "Status absensi: Sudah Pulang";
+
+
+      // Setelah berhasil, selfie dikosongkan
+      // agar tidak terkirim ulang.
+      photoData = null;
+
+
+      document.getElementById("selfiePreview")
+        .classList.add("hidden");
+
+
+      document.getElementById("retakeBtn")
+        .classList.add("hidden");
+
+
+      updateButtons();
+
+
+    } catch (error) {
+
+      setStatus(
+        "❌ Absensi gagal: " +
+        error.message
+      );
+
+
+      updateButtons();
+    }
   }
+
 </script>
+
 </body>
 </html>
