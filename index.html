@@ -173,7 +173,21 @@
         encodeURIComponent(nik);
 
       const response = await fetch(url);
-      const result = await response.json();
+      const result = await response.json();let data = result;
+
+if (typeof data === "string") {
+  data = JSON.parse(data);
+}
+
+if (typeof data.data === "string") {
+  data.data = JSON.parse(data.data);
+}
+
+if (data.data && data.data.success === true) {
+  const employeeData = data.data.data;
+  data.status = data.data.status;
+  data.data = employeeData;
+}
 
       if (!result.success || !result.data) {
         employee = null;
