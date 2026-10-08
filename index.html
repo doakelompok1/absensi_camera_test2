@@ -3,102 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Absensi Karyawan</title>
+  <meta name="theme-color" content="#4a3024">
+  <title>Absensi Karyawan | Kwarda Banten</title>
 
   <style>
+    :root {
+      --brown-dark: #43291d;
+      --brown: #65412d;
+      --brown-light: #8b6043;
+      --cream: #f7efe2;
+      --cream-light: #fffaf2;
+      --cream-dark: #ead8bf;
+      --text: #39271d;
+      --muted: #826e5d;
+      --green: #657344;
+      --orange: #a76535;
+      --border: #e7d5be;
+      --shadow: 0 12px 30px #4a302414;
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at 5% 5%, #fff8eb 0, transparent 35%),
+        radial-gradient(ellipse at 100% 45%, #e9d4b8 0, transparent 35%),
+        var(--cream);
+      color: var(--text);
       margin: 0;
-      padding: 20px 14px;
-      color: #172033;
+      padding: 20px 14px 40px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
     }
 
     .container {
-      max-width: 460px;
+      width: 100%;
+      max-width: 480px;
       margin: auto;
     }
 
+    /* HEADER: tulisan muncul dari samping */
     .header {
-      background: #1746a2;
-      color: white;
-      padding: 24px;
-      border-radius: 18px;
-      margin-bottom: 18px;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      color: var(--cream-light);
+      background: linear-gradient(135deg, #3f271b, #765037);
+      padding: 27px 23px 25px;
+      border-radius: 25px;
+      margin-bottom: 22px;
+      box-shadow: 0 15px 32px #43291d2b;
+      animation: headerEnter .85s cubic-bezier(.2,.8,.2,1) both;
     }
 
-    .header h2 {
-      margin: 0 0 8px;
+    .header::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 210px;
+      height: 210px;
+      right: -85px;
+      top: -115px;
+      border: 1px solid #ffffff2b;
+      border-radius: 50%;
+      box-shadow: 0 0 0 18px #ffffff08,
+                  0 0 0 38px #ffffff08;
+    }
+
+    .header::after {
+      content: "⚜";
+      position: absolute;
+      right: 16px;
+      bottom: -28px;
+      color: #fff5df20;
+      font-size: 118px;
+      transform: rotate(-12deg);
+      pointer-events: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      animation: slideRight .9s .12s both;
+    }
+
+    .brand-symbol {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border-radius: 15px;
+      color: var(--brown-dark);
+      background: var(--cream);
+      font-size: 25px;
+      box-shadow: 0 4px 12px #00000017;
+    }
+
+    .brand-name {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .7px;
+    }
+
+    .brand-sub {
+      margin-top: 4px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      opacity: .78;
+    }
+
+    .header h1 {
+      position: relative;
+      z-index: 1;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(27px, 7vw, 34px);
+      line-height: 1.15;
+      margin: 0 0 12px;
+      letter-spacing: -.6px;
+      animation: slideRight .85s .22s both;
     }
 
     .header p {
+      position: relative;
+      z-index: 1;
       margin: 0;
-      opacity: .9;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #f8eada;
+      max-width: 290px;
+      animation: slideRight .85s .35s both;
     }
 
+    .motto {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      margin-top: 19px;
+      padding: 8px 12px;
+      border: 1px solid #ffffff2c;
+      border-radius: 999px;
+      background: #ffffff0b;
+      font-size: 10px;
+      letter-spacing: .5px;
+      animation: fadeUp .8s .48s both;
+    }
+
+    .header-decoration {
+      position: absolute;
+      right: 22px;
+      bottom: 17px;
+      z-index: 1;
+      font-size: 29px;
+      opacity: .7;
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      padding: 0 4px;
+      margin-bottom: 23px;
+      animation: fadeUp .7s .2s both;
+    }
+
+    .progress-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .progress-heading span:last-child {
+      color: var(--muted);
+      font-weight: normal;
+    }
+
+    .progress-track {
+      height: 6px;
+      background: #dfcbb1;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--brown), #bd9168);
+      border-radius: inherit;
+      transition: width .55s cubic-bezier(.2,.8,.2,1);
+    }
+
+    /* Cards */
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 3px 12px #0000000a;
+      position: relative;
+      background: linear-gradient(145deg, #fffdf8, #fff8ee);
+      border: 1px solid #e9d9c5;
+      padding: 21px;
+      border-radius: 22px;
+      margin-bottom: 17px;
+      box-shadow: var(--shadow);
+      animation: slideRight .8s cubic-bezier(.2,.8,.2,1) both;
+      transition: transform .28s ease, box-shadow .28s ease;
     }
 
-    input,
-    button {
-      width: 100%;
-      padding: 13px;
-      border-radius: 10px;
-      font-size: 15px;
-      margin-top: 10px;
+    .card:nth-of-type(1) { animation-delay: .16s; }
+    .card:nth-of-type(2) { animation-delay: .28s; }
+    .card:nth-of-type(3) { animation-delay: .40s; }
+    .card:nth-of-type(4) { animation-delay: .52s; }
+
+    .card:focus-within {
+      border-color: #c9a782;
+      box-shadow: 0 14px 35px #65412d18;
+    }
+
+    .card-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 19px;
+    }
+
+    .step-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      border-radius: 15px;
+      background: #f0dfc8;
+      color: var(--brown);
+      font-size: 21px;
+      transition: transform .3s ease, background .3s ease;
+    }
+
+    .card:hover .step-icon {
+      transform: rotate(-6deg) scale(1.06);
+      background: #ead2b4;
+    }
+
+    .step-label {
+      color: var(--brown-light);
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .card h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      margin: 0;
+      color: var(--brown-dark);
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      color: #72543d;
+      margin-bottom: 8px;
     }
 
     input {
-      border: 1px solid #cbd5e1;
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid var(--border);
+      background: #fffdf9;
+      border-radius: 13px;
+      color: var(--text);
+      outline: none;
+      font-size: 15px;
+      transition: border .25s ease, box-shadow .25s ease;
+    }
+
+    input::placeholder {
+      color: #b4a18c;
+    }
+
+    input:focus {
+      border-color: var(--brown-light);
+      box-shadow: 0 0 0 4px #8b604318;
     }
 
     button {
-      border: none;
-      color: white;
-      background: #1746a2;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      padding: 14px 15px;
+      margin-top: 10px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #69432d, #43291d);
+      color: #fff9ef;
       font-weight: bold;
+      font-size: 13px;
+      letter-spacing: .15px;
       cursor: pointer;
+      box-shadow: 0 5px 12px #43291d16;
+      transition: transform .22s ease, box-shadow .22s ease,
+                  filter .22s ease, background .22s ease;
+    }
+
+    button::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -80%;
+      width: 45%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, #ffffff35, transparent);
+      transform: rotate(22deg);
+      transition: left .55s ease;
+      pointer-events: none;
+    }
+
+    button:hover:not(:disabled)::after {
+      left: 140%;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 9px 18px #43291d25;
+      filter: brightness(1.06);
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(.985);
     }
 
     button:disabled {
-      background: #94a3b8;
+      background: #d9c9b7;
+      border-color: #e3d6c7;
+      color: #97816a;
+      box-shadow: none;
       cursor: not-allowed;
+      filter: none;
+    }
+
+    button:disabled::after {
+      display: none;
     }
 
     .secondary {
-      background: #475569;
+      background: #f2e6d6;
+      border-color: #e5d2ba;
+      color: #65442e;
+      box-shadow: none;
     }
 
     .success {
-      background: #15803d;
+      background: linear-gradient(135deg, #788557, #4f6038);
+      color: white;
     }
 
     .warning {
-      background: #b45309;
+      background: linear-gradient(135deg, #bd8351, #8f512b);
+      color: white;
     }
 
     video {
       width: 100%;
-      background: #111827;
-      border-radius: 12px;
-      margin-top: 12px;
+      min-height: 190px;
+      max-height: 390px;
+      display: block;
+      object-fit: cover;
+      background: #30241d;
+      border-radius: 17px;
+      margin-top: 8px;
       transform: scaleX(-1);
+      box-shadow: 0 5px 16px #43291d14;
     }
 
     #selfiePreview {
       width: 100%;
-      border-radius: 12px;
-      margin-top: 12px;
       display: block;
+      border-radius: 17px;
+      margin-top: 14px;
+      border: 3px solid #ead8bf;
+      box-shadow: 0 8px 20px #43291d17;
+      animation: photoReveal .5s ease both;
     }
 
     canvas {
@@ -110,619 +413,473 @@
       display: none !important;
     }
 
-    #status,
-    #gpsStatus,
-    #faceStatus {
-      font-size: 14px;
-      line-height: 1.5;
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    #status, #gpsStatus, #faceStatus {
+      font-size: 12px;
+      line-height: 1.8;
       overflow-wrap: anywhere;
+      color: var(--muted);
+      background: #f7efe4;
+      border-radius: 12px;
+      padding: 11px 13px;
+      margin: 13px 0 0;
+      transition: background .3s ease;
+    }
+
+    #status:not(:empty),
+    #gpsStatus:not(:empty),
+    #faceStatus:not(:empty) {
+      animation: fadeUp .3s ease both;
     }
 
     .name {
-      font-size: 20px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 21px;
       font-weight: bold;
+      color: var(--brown-dark);
+      margin-bottom: 8px;
+      animation: slideRight .45s ease both;
     }
 
     .muted {
-      color: #64748b;
-      font-size: 13px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
     }
 
-    .success-text {
-      color: #15803d;
+    #empDivision {
+      font-size: 13px;
+      margin: 8px 0;
+    }
+
+    #empStatus {
+      display: inline-block;
+      background: #eee2d1;
+      color: #6c4a30;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
       font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 17px 12px 0;
+      color: #8e7862;
+      font-size: 11px;
+      line-height: 1.9;
+      animation: fadeUp .8s .5s both;
+    }
+
+    .footer-symbol {
+      font-size: 25px;
+      display: block;
+      margin-bottom: 4px;
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .loading-dots span {
+      width: 5px;
+      height: 5px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: dotBounce .8s infinite alternate;
+    }
+
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes headerEnter {
+      from { opacity: 0; transform: translateY(-20px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(42px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes photoReveal {
+      from { opacity: 0; transform: scale(.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes dotBounce {
+      from { opacity: .35; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(-4px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-width: 360px) {
+      body { padding: 13px 10px 28px; }
+      .header { padding: 22px 18px; }
+      .card { padding: 17px; }
+      .card h2 { font-size: 17px; }
     }
   </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <div class="header">
-    <h2>Absensi Karyawan</h2>
-    <p>Silakan lakukan absensi harian.</p>
-  </div>
+  <header class="header">
+    <div class="brand">
+      <div class="brand-symbol" aria-hidden="true">⚜</div>
+      <div>
+        <div class="brand-name">KWARDA BANTEN</div>
+        <div class="brand-sub">GERAKAN PRAMUKA</div>
+      </div>
+    </div>
 
-  <!-- IDENTITAS -->
-  <div class="card">
-    <h3>1. Identitas Karyawan</h3>
+    <h1>Absensi<br>Karyawan</h1>
+    <p>Disiplin, tanggung jawab, dan semangat mengabdi. Silakan lakukan absensi harian.</p>
 
-    <label for="nik">Nomor Induk Karyawan (NIK)</label>
+    <div class="motto">Satyaku Kudarmakan · Darmaku Kubaktikan</div>
+    <div class="header-decoration" aria-hidden="true">⚜</div>
+  </header>
 
-    <input
-      id="nik"
-      type="text"
-      placeholder="Masukkan NIK"
-      autocomplete="off"
-    >
-
-    <button id="checkBtn" onclick="checkEmployee()">
-      Cek Karyawan
-    </button>
-
-    <div id="employee" class="hidden">
-      <hr>
-
-      <p class="name" id="empName"></p>
-
-      <p id="empDivision"></p>
-
-      <p class="muted" id="empStatus"></p>
+  <div class="progress-wrap">
+    <div class="progress-heading">
+      <span>Perjalanan Absensi</span>
+      <span id="progressText">Langkah 1 dari 4</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
   </div>
 
+  <!-- 1. IDENTITAS -->
+  <section class="card">
+    <div class="card-heading">
+      <div class="step-icon" aria-hidden="true">♙</div>
+      <div>
+        <div class="step-label">Langkah 01</div>
+        <h2>Identitas Karyawan</h2>
+      </div>
+    </div>
 
-  <!-- SELFIE -->
-  <div class="card">
-    <h3>2. Ambil Selfie</h3>
+    <label for="nik">Nomor Induk Karyawan (NIK)</label>
+    <input id="nik" type="text" placeholder="Masukkan NIK kamu" autocomplete="off">
 
-    <video
-      id="cam"
-      autoplay
-      muted
-      playsinline
-    ></video>
+    <button id="checkBtn" onclick="checkEmployee()">⚜ &nbsp; Cek Karyawan</button>
 
-    <button
-      id="startBtn"
-      onclick="startCamera()"
-    >
-      Aktifkan Kamera
-    </button>
+    <div id="employee" class="hidden">
+      <hr>
+      <p class="name" id="empName"></p>
+      <p id="empDivision"></p>
+      <p class="muted" id="empStatus"></p>
+    </div>
+  </section>
 
-    <button
-      class="success"
-      id="captureBtn"
-      onclick="captureSelfie()"
-      disabled
-    >
-      Ambil Selfie
-    </button>
+  <!-- 2. SELFIE -->
+  <section class="card">
+    <div class="card-heading">
+      <div class="step-icon" aria-hidden="true">▣</div>
+      <div>
+        <div class="step-label">Langkah 02</div>
+        <h2>Ambil Selfie</h2>
+      </div>
+    </div>
 
-    <button
-      class="secondary"
-      onclick="stopCamera()"
-    >
-      Matikan Kamera
-    </button>
+    <video id="cam" autoplay muted playsinline></video>
 
-    <p id="faceStatus">
-      Kamera belum aktif.
-    </p>
+    <button id="startBtn" onclick="startCamera()">Aktifkan Kamera</button>
+    <button class="success" id="captureBtn" onclick="captureSelfie()" disabled>Ambil Selfie</button>
+    <button class="secondary" onclick="stopCamera()">Matikan Kamera</button>
 
-    <img
-      id="selfiePreview"
-      class="hidden"
-      alt="Preview selfie"
-    >
+    <p id="faceStatus">Kamera belum aktif.</p>
 
-    <button
-      id="retakeBtn"
-      class="secondary hidden"
-      onclick="retakeSelfie()"
-    >
-      Ambil Ulang Selfie
-    </button>
+    <img id="selfiePreview" class="hidden" alt="Preview selfie">
 
-    <canvas
-      id="photoCanvas"
-      class="hidden"
-    ></canvas>
+    <button id="retakeBtn" class="secondary hidden" onclick="retakeSelfie()">Ambil Ulang Selfie</button>
+
+    <canvas id="photoCanvas" class="hidden"></canvas>
 
     <p class="muted">
-      Selfie hanya digunakan sebagai bukti foto absensi.
-      Tidak ada verifikasi atau pengenalan wajah.
+      Selfie hanya digunakan sebagai bukti foto absensi. Tidak ada verifikasi atau pengenalan wajah.
     </p>
-  </div>
+  </section>
 
+  <!-- 3. GPS -->
+  <section class="card">
+    <div class="card-heading">
+      <div class="step-icon" aria-hidden="true">⌖</div>
+      <div>
+        <div class="step-label">Langkah 03</div>
+        <h2>Lokasi Kehadiran</h2>
+      </div>
+    </div>
 
-  <!-- GPS -->
-  <div class="card">
-    <h3>3. Lokasi</h3>
+    <button class="secondary" onclick="getGPS()">⌖ &nbsp; Ambil Lokasi GPS</button>
+    <p id="gpsStatus">Lokasi belum diambil.</p>
+  </section>
 
-    <button
-      class="secondary"
-      onclick="getGPS()"
-    >
-      Ambil Lokasi GPS
+  <!-- 4. ABSENSI -->
+  <section class="card">
+    <div class="card-heading">
+      <div class="step-icon" aria-hidden="true">➤</div>
+      <div>
+        <div class="step-label">Langkah 04</div>
+        <h2>Kirim Absensi</h2>
+      </div>
+    </div>
+
+    <button class="success" id="inBtn" disabled onclick="submitAttendance('masuk')">
+      ☀ &nbsp; Absen Masuk
     </button>
 
-    <p id="gpsStatus">
-      Lokasi belum diambil.
-    </p>
-  </div>
-
-
-  <!-- ABSENSI -->
-  <div class="card">
-    <h3>4. Kirim Absensi</h3>
-
-    <button
-      class="success"
-      id="inBtn"
-      disabled
-      onclick="submitAttendance('masuk')"
-    >
-      Absen Masuk
+    <button class="warning" id="outBtn" disabled onclick="submitAttendance('pulang')">
+      ☾ &nbsp; Absen Pulang
     </button>
 
-    <button
-      class="warning"
-      id="outBtn"
-      disabled
-      onclick="submitAttendance('pulang')"
-    >
-      Absen Pulang
-    </button>
+    <p id="status">Masukkan NIK untuk memulai.</p>
+  </section>
 
-    <p id="status">
-      Masukkan NIK untuk memulai.
-    </p>
-  </div>
-
+  <footer class="footer">
+    <span class="footer-symbol" aria-hidden="true">⚜</span>
+    <strong>Kwarda Banten · Gerakan Pramuka</strong><br>
+    Satyaku Kudarmakan, Darmaku Kubaktikan
+  </footer>
 </div>
 
-
 <script>
-
-  // =====================================================
-  // URL WEB APP APPS SCRIPT
-  // =====================================================
-
+  // URL WEB APP APPS SCRIPT — TETAP SAMA
   const API_URL =
     "https://script.google.com/macros/s/AKfycbxqbQvtWoEasmnb_yD6TluN2YoRLe_UArsH3gAe5wEQ4JDqaawwJ01kxtYdcikgKx55/exec";
 
-
-  // =====================================================
   // VARIABLE
-  // =====================================================
-
   let employee = null;
-
   let stream = null;
-
   let locationData = null;
-
   let photoData = null;
 
-
-  // =====================================================
   // STATUS
-  // =====================================================
-
   function setStatus(message) {
     document.getElementById("status").textContent = message;
   }
 
+  // PROGRESS VISUAL: TIDAK MENGUBAH LOGIKA ABSENSI
+  function updateProgress(step) {
+    const bar = document.getElementById("progressBar");
+    const text = document.getElementById("progressText");
+    bar.style.width = (step / 4 * 100) + "%";
+    text.textContent = "Langkah " + step + " dari 4";
+  }
 
-  // =====================================================
+  function refreshProgress() {
+    if (employee && stream && photoData && locationData) {
+      updateProgress(4);
+    } else if (locationData) {
+      updateProgress(3);
+    } else if (stream || photoData) {
+      updateProgress(2);
+    } else {
+      updateProgress(1);
+    }
+  }
+
   // CEK KARYAWAN
-  // =====================================================
-
   async function checkEmployee() {
-
-    const nik =
-      document.getElementById("nik").value.trim();
-
-    const btn =
-      document.getElementById("checkBtn");
-
+    const nik = document.getElementById("nik").value.trim();
+    const btn = document.getElementById("checkBtn");
 
     if (!nik) {
-
-      setStatus(
-        "Masukkan NIK terlebih dahulu."
-      );
-
+      setStatus("Masukkan NIK terlebih dahulu.");
       return;
     }
-
 
     if (API_URL.includes("TEMPEL_URL")) {
-
-      setStatus(
-        "URL Apps Script belum dipasang."
-      );
-
+      setStatus("URL Apps Script belum dipasang.");
       return;
     }
 
-
     btn.disabled = true;
-
     employee = null;
-
     photoData = null;
 
-    document
-      .getElementById("employee")
-      .classList.add("hidden");
-
-    document
-      .getElementById("selfiePreview")
-      .classList.add("hidden");
-
-    document
-      .getElementById("retakeBtn")
-      .classList.add("hidden");
+    document.getElementById("employee").classList.add("hidden");
+    document.getElementById("selfiePreview").classList.add("hidden");
+    document.getElementById("retakeBtn").classList.add("hidden");
 
     updateButtons();
-
-    setStatus(
-      "Memeriksa data karyawan..."
-    );
-
+    setStatus("Memeriksa data karyawan...");
 
     try {
-
-      const url =
-        API_URL +
-        "?action=getEmployee&nik=" +
-        encodeURIComponent(nik);
-
-
-      const response =
-        await fetch(url);
-
+      const url = API_URL + "?action=getEmployee&nik=" + encodeURIComponent(nik);
+      const response = await fetch(url);
 
       if (!response.ok) {
-
-        throw new Error(
-          "HTTP " + response.status
-        );
+        throw new Error("HTTP " + response.status);
       }
 
-
-      const result =
-        await response.json();
-
+      const result = await response.json();
 
       if (!result.success || !result.data) {
-
-        setStatus(
-          result.message ||
-          "Data karyawan tidak ditemukan."
-        );
-
+        setStatus(result.message || "Data karyawan tidak ditemukan.");
         return;
       }
 
-
       employee = result.data;
 
+      document.getElementById("empName").textContent = employee.nama || "";
+      document.getElementById("empDivision").textContent =
+        "Divisi: " + (employee.divisi || "-");
+      document.getElementById("empStatus").textContent =
+        "Status absensi: " + (result.status || "-");
 
-      document.getElementById("empName")
-        .textContent =
-        employee.nama || "";
-
-
-      document.getElementById("empDivision")
-        .textContent =
-        "Divisi: " +
-        (employee.divisi || "-");
-
-
-      document.getElementById("empStatus")
-        .textContent =
-        "Status absensi: " +
-        (result.status || "-");
-
-
-      document
-        .getElementById("employee")
-        .classList.remove("hidden");
-
-
-      setStatus(
-        "Data karyawan ditemukan!"
-      );
-
+      document.getElementById("employee").classList.remove("hidden");
+      setStatus("Data karyawan ditemukan!");
 
     } catch (error) {
-
-      setStatus(
-        "Gagal mengakses API: " +
-        error.message
-      );
-
-
+      setStatus("Gagal mengakses API: " + error.message);
     } finally {
-
       btn.disabled = false;
-
       updateButtons();
+      refreshProgress();
     }
   }
 
-
-  // =====================================================
   // KAMERA
-  // =====================================================
-
   async function startCamera() {
-
     try {
-
-      if (
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-      ) {
-
-        throw new Error(
-          "Browser tidak mendukung akses kamera."
-        );
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Browser tidak mendukung akses kamera.");
       }
-
 
       stopCamera();
 
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+        audio: false
+      });
 
-      stream =
-        await navigator.mediaDevices.getUserMedia({
-
-          video: {
-            facingMode: "user"
-          },
-
-          audio: false
-
-        });
-
-
-      const cam =
-        document.getElementById("cam");
-
-
+      const cam = document.getElementById("cam");
       cam.srcObject = stream;
+      await cam.play();
 
-
-      document.getElementById("faceStatus")
-        .textContent =
+      document.getElementById("faceStatus").textContent =
         "Kamera aktif. Silakan ambil selfie.";
-
-
-      document.getElementById("captureBtn")
-        .disabled = false;
-
+      document.getElementById("captureBtn").disabled = false;
 
       updateButtons();
-
+      refreshProgress();
 
     } catch (error) {
-
-      document.getElementById("faceStatus")
-        .textContent =
-        "Kamera gagal: " +
-        error.name +
-        " — " +
-        error.message;
-
+      document.getElementById("faceStatus").textContent =
+        "Kamera gagal: " + error.name + " — " + error.message;
     }
   }
 
-
-  // =====================================================
   // STOP KAMERA
-  // =====================================================
-
   function stopCamera() {
-
     if (stream) {
-
-      stream
-        .getTracks()
-        .forEach(track => track.stop());
+      stream.getTracks().forEach(track => track.stop());
     }
-
 
     stream = null;
-
-
-    document.getElementById("cam")
-      .srcObject = null;
-
-
-    document.getElementById("captureBtn")
-      .disabled = true;
-
+    document.getElementById("cam").srcObject = null;
+    document.getElementById("captureBtn").disabled = true;
 
     updateButtons();
+    refreshProgress();
   }
 
-
-  // =====================================================
   // AMBIL SELFIE
-  // =====================================================
-
   function captureSelfie() {
-
     if (!stream) {
-
-      setStatus(
-        "Aktifkan kamera terlebih dahulu."
-      );
-
+      setStatus("Aktifkan kamera terlebih dahulu.");
       return;
     }
 
+    const video = document.getElementById("cam");
+    const canvas = document.getElementById("photoCanvas");
+    const preview = document.getElementById("selfiePreview");
 
-    const video =
-      document.getElementById("cam");
-
-    const canvas =
-      document.getElementById("photoCanvas");
-
-    const preview =
-      document.getElementById("selfiePreview");
-
-
-    if (
-      video.videoWidth === 0 ||
-      video.videoHeight === 0
-    ) {
-
-      setStatus(
-        "Kamera belum siap. Tunggu sebentar lalu coba lagi."
-      );
-
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      setStatus("Kamera belum siap. Tunggu sebentar lalu coba lagi.");
       return;
     }
 
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-    canvas.width =
-      video.videoWidth;
-
-    canvas.height =
-      video.videoHeight;
-
-
-    const ctx =
-      canvas.getContext("2d");
-
-
-    // Membuat hasil foto sama seperti
-    // tampilan kamera yang di-mirror.
+    const ctx = canvas.getContext("2d");
     ctx.save();
-
-    ctx.translate(
-      canvas.width,
-      0
-    );
-
+    ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
-
-
-    ctx.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     ctx.restore();
 
+    photoData = canvas.toDataURL("image/jpeg", 0.80);
 
-    // Kompres foto menjadi JPEG
-    photoData =
-      canvas.toDataURL(
-        "image/jpeg",
-        0.80
-      );
+    preview.src = photoData;
+    preview.classList.remove("hidden");
+    document.getElementById("retakeBtn").classList.remove("hidden");
+    document.getElementById("faceStatus").textContent = "Selfie berhasil diambil.";
 
-
-    // Tampilkan preview
-    preview.src =
-      photoData;
-
-    preview.classList.remove(
-      "hidden"
-    );
-
-
-    document.getElementById("retakeBtn")
-      .classList.remove("hidden");
-
-
-    document.getElementById("faceStatus")
-      .textContent =
-      "Selfie berhasil diambil.";
-
-
-    setStatus(
-      "Selfie berhasil. Silakan ambil lokasi GPS."
-    );
-
-
+    setStatus("Selfie berhasil. Silakan ambil lokasi GPS.");
     updateButtons();
+    refreshProgress();
   }
 
-
-  // =====================================================
   // AMBIL ULANG SELFIE
-  // =====================================================
-
   function retakeSelfie() {
-
     photoData = null;
-
-
-    document.getElementById("selfiePreview")
-      .classList.add("hidden");
-
-
-    document.getElementById("retakeBtn")
-      .classList.add("hidden");
-
-
-    document.getElementById("faceStatus")
-      .textContent =
-      "Silakan ambil selfie lagi.";
-
+    document.getElementById("selfiePreview").classList.add("hidden");
+    document.getElementById("retakeBtn").classList.add("hidden");
+    document.getElementById("faceStatus").textContent = "Silakan ambil selfie lagi.";
 
     updateButtons();
+    refreshProgress();
   }
 
-
-  // =====================================================
   // GPS
-  // =====================================================
-
   function getGPS() {
-
-    const label =
-      document.getElementById("gpsStatus");
-
+    const label = document.getElementById("gpsStatus");
 
     if (!navigator.geolocation) {
-
-      label.textContent =
-        "Browser tidak mendukung GPS.";
-
+      label.textContent = "Browser tidak mendukung GPS.";
       return;
     }
 
-
-    label.textContent =
-      "Mengambil lokasi...";
-
+    label.textContent = "Mengambil lokasi...";
 
     navigator.geolocation.getCurrentPosition(
-
       position => {
-
         locationData = {
-
-          lat:
-            position.coords.latitude,
-
-          lng:
-            position.coords.longitude
-
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
         };
-
 
         label.textContent =
           "GPS berhasil: " +
@@ -730,160 +887,76 @@
           ", " +
           locationData.lng.toFixed(6);
 
-
         updateButtons();
+        refreshProgress();
       },
-
-
       error => {
-
-        label.textContent =
-          "GPS gagal: " +
-          error.message;
-
-
+        label.textContent = "GPS gagal: " + error.message;
         locationData = null;
 
-
         updateButtons();
+        refreshProgress();
       },
-
-
       {
         enableHighAccuracy: true,
-
         timeout: 15000,
-
         maximumAge: 0
       }
-
     );
   }
 
-
-  // =====================================================
   // AKTIFKAN / NONAKTIFKAN TOMBOL ABSEN
-  // =====================================================
-
   function updateButtons() {
+    const ready = !!employee && !!stream && !!photoData && !!locationData;
 
-    const ready =
-      !!employee &&
-      !!stream &&
-      !!photoData &&
-      !!locationData;
-
-
-    document.getElementById("inBtn")
-      .disabled = !ready;
-
-
-    document.getElementById("outBtn")
-      .disabled = !ready;
+    document.getElementById("inBtn").disabled = !ready;
+    document.getElementById("outBtn").disabled = !ready;
   }
 
-
-  // =====================================================
-  // KIRIM ABSENSI
-  // =====================================================
-
+  // KIRIM ABSENSI — PAYLOAD BACKEND TETAP SAMA
   async function submitAttendance(type) {
-
-    if (
-      !employee ||
-      !stream ||
-      !photoData ||
-      !locationData
-    ) {
-
-      setStatus(
-        "Lengkapi NIK, kamera, selfie, dan GPS terlebih dahulu."
-      );
-
+    if (!employee || !stream || !photoData || !locationData) {
+      setStatus("Lengkapi NIK, kamera, selfie, dan GPS terlebih dahulu.");
       return;
     }
 
-
-    const inBtn =
-      document.getElementById("inBtn");
-
-    const outBtn =
-      document.getElementById("outBtn");
-
+    const inBtn = document.getElementById("inBtn");
+    const outBtn = document.getElementById("outBtn");
 
     inBtn.disabled = true;
     outBtn.disabled = true;
 
+    setStatus("Mengirim absensi...");
 
-    setStatus(
-      "Mengirim absensi..."
-    );
-
-
-    // Backend submitAttendance()
-    // menggunakan:
-    // belum_masuk = absen masuk
-    // selain itu = absen pulang
-
-    const backendType =
-      type === "masuk"
-        ? "belum_masuk"
-        : "sudah_masuk";
-
+    const backendType = type === "masuk" ? "belum_masuk" : "sudah_masuk";
 
     const data = {
-
       action: "submit",
-
       id: employee.id,
-
       type: backendType,
-
       foto: photoData,
-
       lat: locationData.lat,
-
       lng: locationData.lng
     };
 
-
     try {
-
-      const response =
-        await fetch(API_URL, {
-
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "text/plain;charset=utf-8"
-          },
-
-          body:
-            JSON.stringify(data)
-        });
-
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(data)
+      });
 
       if (!response.ok) {
-
-        throw new Error(
-          "HTTP " + response.status
-        );
+        throw new Error("HTTP " + response.status);
       }
 
-
-      const result =
-        await response.json();
-
+      const result = await response.json();
 
       if (!result.success) {
-
-        throw new Error(
-          result.message ||
-          "Absensi gagal disimpan."
-        );
+        throw new Error(result.message || "Absensi gagal disimpan.");
       }
-
 
       setStatus(
         type === "masuk"
@@ -891,43 +964,31 @@
           : "✅ Absen pulang berhasil disimpan!"
       );
 
-
-      document.getElementById("empStatus")
-        .textContent =
+      document.getElementById("empStatus").textContent =
         type === "masuk"
           ? "Status absensi: Sudah Masuk"
           : "Status absensi: Sudah Pulang";
 
-
-      // Setelah berhasil, selfie dikosongkan
-      // agar tidak terkirim ulang.
       photoData = null;
 
-
-      document.getElementById("selfiePreview")
-        .classList.add("hidden");
-
-
-      document.getElementById("retakeBtn")
-        .classList.add("hidden");
-
+      document.getElementById("selfiePreview").classList.add("hidden");
+      document.getElementById("retakeBtn").classList.add("hidden");
 
       updateButtons();
-
+      refreshProgress();
 
     } catch (error) {
-
-      setStatus(
-        "❌ Absensi gagal: " +
-        error.message
-      );
-
-
+      setStatus("❌ Absensi gagal: " + error.message);
       updateButtons();
     }
   }
 
+  // ANIMASI PROGRESS AWAL
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("progressBar").style.width = "25%";
+    }, 350);
+  });
 </script>
-
 </body>
 </html>
